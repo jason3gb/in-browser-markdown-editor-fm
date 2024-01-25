@@ -1,0 +1,22 @@
+// Base styles
+body {
+  font-family: $font-family-roboto;
+  font-size: $font-size-regular;
+  line-height: $line-height-base;
+  color: $color-dark-grey;
+  background-color: $color-white;
+}
+
+h1, .preview-h1 {
+  font-size: $font-size-h1;
+  font-family: $font-family-roboto-slab;
+}
+
+// Other heading styles...
+
+p, .preview-paragraph {
+  font-size: $font-size-regular;
+  line-height: $line-height-base;
+}
+
+// Other base styles...
