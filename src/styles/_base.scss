@@ -1,22 +1,76 @@
 // Base styles
+@import '~github-markdown-css/github-markdown-light.css';
+
 body {
   font-family: $font-family-roboto;
   font-size: $font-size-regular;
-  line-height: $line-height-base;
-  color: $color-dark-grey;
-  background-color: $color-white;
 }
 
-h1, .preview-h1 {
-  font-size: $font-size-h1;
-  font-family: $font-family-roboto-slab;
+.custom-markdown-body {
+  h1 {
+    @include roboto-slab-bold(32px, normal);
+    color: $color-700;
+  }
+
+  h2 {
+    @include roboto-slab-light(28px, normal);
+    color: $color-700;
+  }
+
+  h3 {
+    @include roboto-slab-bold(24px, normal);
+    color: $color-700;
+  }
+
+  h4 {
+    @include roboto-slab-bold(20px, normal);
+    color: $color-700;
+  }
+
+  h5 {
+    @include roboto-slab-bold(16px, normal);
+    color: $color-700;
+  }
+
+  h6 {
+    @include roboto-slab-bold(14px, normal);
+    color: $color-orange;
+  }
+
+  li, p {
+    @include roboto-slab-regular(14px, 24px);
+    color: $color-500;
+  }
+
+  blockquote {
+    padding: 24px;
+    background-color: $color-200;
+    border-left: .25em solid $color-orange;
+    border-radius: 4px;
+
+    p {
+      @include roboto-slab-bold(14px, 24px);
+      color: $color-500;
+    }
+  }
+
+  code {
+    @include roboto-mono-regular(14px, 24px);
+    color: $color-500;
+    background: none;
+  }
+
+  pre {
+    padding: 24px;
+    background-color: $color-200;
+  }
+
+  ul {
+    li::marker {
+      color: $color-orange;
+    }
+  }
+
 }
 
-// Other heading styles...
 
-p, .preview-paragraph {
-  font-size: $font-size-regular;
-  line-height: $line-height-base;
-}
-
-// Other base styles...

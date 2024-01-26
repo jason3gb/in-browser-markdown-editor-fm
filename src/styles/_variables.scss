@@ -1,15 +1,16 @@
 // Color Palette
-$color-dark-blue: #151619;
-$color-light-blue: #D1D2F2;
-$color-dark-grey: #2B2D31;
-$color-medium-grey: #35393F;
-$color-blue: #5A6069;
-$color-purple: #7C8187;
-$color-pink: #C1C4CB;
-$color-light-grey: #E4E4E4;
-$color-white: #FFFFFF;
-$color-red: #E64663;
-$color-yellow: #F39765;
+$color-1000: #151619;
+$color-900: #1D1F22;
+$color-800: #2B2D31;
+$color-700: #35393F;
+$color-600: #5A6069;
+$color-500: #7C8187;
+$color-400: #C1C4CB;
+$color-300: #E4E4E4;
+$color-200: #F5F5F5;
+$color-100: #FFFFFF;
+$color-orange: #E46643;
+$color-orange-hover: #F39765;
 
 // Typography
 $font-family-roboto: 'Roboto', sans-serif;
@@ -30,3 +31,55 @@ $font-size-small: 13px;
 // Line Spacing
 $line-height-base: 1.6;
 $line-height-tight: 1.4;
+
+// layout
+$nav-bar-height: 72px;
+
+// Define Mixin for Roboto Regular
+@mixin roboto-regular($size: 15px, $spacing: normal, $height: normal) {
+  font-family: 'Roboto', sans-serif;
+  font-weight: normal;
+  font-size: $size;
+  letter-spacing: $spacing;
+  line-height: $height;
+}
+
+// Define Mixin for Roboto Light
+@mixin roboto-light($size: 13px, $height: normal) {
+  font-family: $font-family-roboto;
+  font-weight: 300;
+  font-size: $size;
+  line-height: $height;
+}
+
+// Define Mixin for Roboto Slab Bold
+@mixin roboto-slab-bold($size: 32px, $height: normal) {
+  font-family: 'Roboto Slab', serif;
+  font-weight: bold;
+  font-size: $size;
+  line-height: $height;
+}
+
+// Define Mixin for Roboto Slab Bold
+@mixin roboto-slab-regular($size: 14px, $height: normal) {
+  font-family: 'Roboto Slab', serif;
+  font-weight: normal;
+  font-size: $size;
+  line-height: $height;
+}
+
+// Define Mixin for Roboto Slab Light
+@mixin roboto-slab-light($size: 28px, $height: normal) {
+  font-family: 'Roboto Slab', serif;
+  font-weight: 300;
+  font-size: $size;
+  line-height: $height;
+}
+
+// Define Mixin for Roboto Mono Regular
+@mixin roboto-mono-regular($size: 14px, $height: normal) {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: normal;
+  font-size: $size;
+  line-height: $height;
+}

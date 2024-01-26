@@ -1,6 +1,109 @@
 // Main SCSS file
+
+// Import all base files
+@import 'reset';
 @import 'variables';
 @import 'base';
-@import 'editor';
 
+// Import each section
+@import 'header';
+
+
+.editor-main {
+  height: calc(100vh - $nav-bar-height);
+  display: flex;
+
+  .markdown-section {
+    flex: 1;
+
+    height: 100%;
+
+    .editor-area {
+      // font
+      @include roboto-mono-regular(14px, 24px);
+      color: $color-700;
+
+      height: 100%;
+      width: 100%;
+
+      box-sizing: border-box;
+      border: none;
+      padding: 10px 16px;
+
+      background-color: $color-100;
+    }
+
+    .in-app-heading {
+      position: sticky;
+      top: $nav-bar-height;
+
+      padding: 16px 12px;
+
+      display: flex;
+      align-items: center;
+
+      background-color: $color-200;
+
+      > span {
+        @include roboto-regular(14px, 2px, normal);
+        font-weight: 500;
+        color: $color-500;
+      }
+    }
+  }
+
+  .editor-spacer {
+    flex-grow: 0;
+
+    width: 1px;
+    height: 100%;
+    background-color: $color-300;
+  }
+
+  .preview-section {
+    flex: 1;
+    height: 100%;
+
+    .in-app-heading {
+      position: sticky;
+      top: $nav-bar-height;
+
+      padding: 16px 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      background-color: $color-200;
+
+      > .heading-title {
+        @include roboto-regular(14px, 2px, normal);
+        font-weight: 500;
+        color: $color-500;
+      }
+
+      >.preview-icon {
+        display: inline-block;
+        width: 16px;
+        height: 12px;
+
+        background-image: url("../assets/icon-show-preview.svg");
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    }
+
+    .preview-area {
+      box-sizing: border-box;
+      height: 100%;
+      overflow: auto;
+      width: 100%;
+      padding: 24px 24px 50px 24px;
+
+      background-color: $color-100;
+    }
+  }
+
+}
 

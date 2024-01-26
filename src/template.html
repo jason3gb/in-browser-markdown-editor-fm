@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
-  
+
   <title>Frontend Mentor | In-browser markdown editor</title>
 </head>
 
@@ -13,27 +13,58 @@
 <header class="editor-header">
 
   <nav class="editor-navbar">
-    <span>MARKDOWN</span>
-    <input type="text" placeholder="Document Name" class="document-name">
-    <div class="theme-toggle">
-      <!-- Theme toggle icon here -->
+
+    <div class="menu-bar">
+      <span class="menu-bar-icon"></span>
     </div>
-    <button class="save-btn">Save Changes</button>
+
+    <span class="editor-name">MARKDOWN</span>
+
+    <span class="separate-bar"></span>
+
+    <div class="current-doc">
+      <span class="doc-icon"></span>
+      <div class="doc-name">
+        <span class="doc-name-title">Document Name</span>
+        <span class="doc-name-text">welcome.md</span>
+      </div>
+    </div>
+
+    <span class="flex-spacer"></span>
+
+    <button id="theme-switch">Theme Switch</button>
+
+    <span class="delete-icon"></span>
+    <button class="save-btn">
+      <span class="save-btn-icon"></span>
+      <span class="save-btn-text">Save Changes</span>
+    </button>
   </nav>
 </header>
 
 <main class="editor-main">
   <section class="markdown-section">
-    <textarea id="markdown-editor" class="editor-area" placeholder="Write markdown in the markdown editor window"></textarea>
+    <div class="in-app-heading">
+      <span class="heading-title">MARKDOWN</span>
+    </div>
+
+    <textarea id="markdown-editor" class="editor-area"
+              placeholder="Write markdown in the markdown editor window"></textarea>
   </section>
+
+  <span class="editor-spacer"></span>
+
   <section class="preview-section">
-    <div id="markdown-preview" class="preview-area"></div>
+    <div class="in-app-heading">
+      <span class="heading-title">PREVIEW</span>
+      <span class="preview-icon"></span>
+    </div>
+    <div class="preview-area">
+      <div id="markdown-preview" class="markdown-body custom-markdown-body"></div>
+    </div>
   </section>
 </main>
 
-<footer class="editor-footer">
-  <!-- Footer content goes here -->
-</footer>
 </body>
 
 </html>
