@@ -1,35 +1,57 @@
 // Base styles
-@import '~github-markdown-css/github-markdown-light.css';
+@import 'github-markdown';
+
+:root {
+  --base-text-weight-semibold: 600;
+  --base-text-weight-medium: 500;
+  --base-text-weight-normal: 400;
+  --base-size-8: 8px;
+  --base-size-16: 16px;
+}
 
 body {
   font-family: $font-family-roboto;
   font-size: $font-size-regular;
 }
 
+:root {
+  --editor-text-color: #{$color-700};
+  --editor-header-color: #{$color-700};
+  --editor-block-color: #{$color-200};
+  --editor-block-text-color: #{$color-700};
+}
+
+body.dark-mode {
+  --editor-text-color: #{$color-400};
+  --editor-header-color: #{$color-100};
+  --editor-block-color: #{$color-800};
+  --editor-block-text-color: #{$color-100};
+}
+
 .custom-markdown-body {
   h1 {
     @include roboto-slab-bold(32px, normal);
-    color: $color-700;
+    color: var(--editor-header-color);
   }
 
   h2 {
     @include roboto-slab-light(28px, normal);
-    color: $color-700;
+    color: var(--editor-header-color);
   }
 
   h3 {
     @include roboto-slab-bold(24px, normal);
-    color: $color-700;
+    color: var(--editor-header-color);
   }
 
   h4 {
     @include roboto-slab-bold(20px, normal);
-    color: $color-700;
+    color: var(--editor-header-color);
   }
 
   h5 {
     @include roboto-slab-bold(16px, normal);
-    color: $color-700;
+    color: var(--editor-header-color);
   }
 
   h6 {
@@ -39,30 +61,30 @@ body {
 
   li, p {
     @include roboto-slab-regular(14px, 24px);
-    color: $color-500;
+    color: var(--editor-text-color);
   }
 
   blockquote {
     padding: 24px;
-    background-color: $color-200;
+    background-color: var(--editor-block-color);
     border-left: .25em solid $color-orange;
     border-radius: 4px;
 
     p {
       @include roboto-slab-bold(14px, 24px);
-      color: $color-500;
+      color: var(--editor-block-text-color);
     }
   }
 
   code {
     @include roboto-mono-regular(14px, 24px);
-    color: $color-500;
+    color: var(--editor-block-text-color);
     background: none;
   }
 
   pre {
     padding: 24px;
-    background-color: $color-200;
+    background-color: var(--editor-block-color);
   }
 
   ul {
@@ -70,7 +92,7 @@ body {
       color: $color-orange;
     }
   }
-
 }
+
 
 

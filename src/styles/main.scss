@@ -8,6 +8,22 @@
 // Import each section
 @import 'header';
 
+// theme colors
+:root {
+  --editor-background-color: #{$color-100};
+  --editor-in-app-heading-color: #{$color-200};
+  --editor-in-app-heading-title-color: #{$color-500};
+  --editor-spacer-color: #{$color-500};
+}
+
+body.dark-mode {
+  --editor-text-color: #{$color-400};
+  --editor-background-color: #{$color-1000};
+  --editor-in-app-heading-color: #{$color-900};
+  --editor-in-app-heading-title-color: #{$color-400};
+  --editor-spacer-color: #{$color-600};
+}
+
 
 .editor-main {
   height: calc(100vh - $nav-bar-height);
@@ -15,13 +31,11 @@
 
   .markdown-section {
     flex: 1;
-
     height: 100%;
 
     .editor-area {
       // font
       @include roboto-mono-regular(14px, 24px);
-      color: $color-700;
 
       height: 100%;
       width: 100%;
@@ -30,7 +44,8 @@
       border: none;
       padding: 10px 16px;
 
-      background-color: $color-100;
+      color: var(--editor-text-color);
+      background-color: var(--editor-background-color);
     }
 
     .in-app-heading {
@@ -42,12 +57,12 @@
       display: flex;
       align-items: center;
 
-      background-color: $color-200;
+      background-color: var(--editor-in-app-heading-color);
 
       > span {
         @include roboto-regular(14px, 2px, normal);
         font-weight: 500;
-        color: $color-500;
+        color: var(--editor-in-app-heading-title-color);
       }
     }
   }
@@ -57,7 +72,7 @@
 
     width: 1px;
     height: 100%;
-    background-color: $color-300;
+    background-color: var(--editor-spacer-color);
   }
 
   .preview-section {
@@ -74,12 +89,12 @@
       align-items: center;
       justify-content: space-between;
 
-      background-color: $color-200;
+      background-color: var(--editor-in-app-heading-color);
 
       > .heading-title {
         @include roboto-regular(14px, 2px, normal);
         font-weight: 500;
-        color: $color-500;
+        color: var(--editor-in-app-heading-title-color);
       }
 
       >.preview-icon {
@@ -101,7 +116,7 @@
       width: 100%;
       padding: 24px 24px 50px 24px;
 
-      background-color: $color-100;
+      background-color: var(--color-canvas-default);
     }
   }
 

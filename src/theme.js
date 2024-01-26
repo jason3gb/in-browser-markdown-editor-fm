@@ -17,7 +17,7 @@ export function themeLoader(){
 // On page load, apply the stored theme
   window.addEventListener('DOMContentLoaded', () => {
     const storedTheme = localStorage.getItem('theme');
-    if(storedTheme) {
+    if(storedTheme === 'dark-mode') {
       document.body.classList.add(storedTheme);
     }
   });
