@@ -94,5 +94,83 @@ body.dark-mode {
   }
 }
 
+// doc styling
+@mixin doc-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .doc-icon {
+    display: inline-block;
+    width: 14px;
+    height: 16px;
+
+    background-image: url("../assets/icon-document.svg");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .doc-name {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .doc-name-title {
+      color: $color-500;
+    }
+
+    .doc-name-text {
+      color: $color-100;
+    }
+  }
+}
+
+// button styling
+@mixin editor-button($icon-url: null) {
+  background-color: $color-orange;
+  border: none;
+  border-radius: 4px;
+
+  box-sizing: border-box;
+  padding: 10px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+
+  @if $icon-url != null {
+    .btn-icon {
+      display: inline-block;
+      width: 14px;
+      height: 16px;
+
+      background-image: $icon-url;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  }
+
+  .btn-text {
+    color: $color-100;
+  }
+}
+
+// icon style
+@mixin icon($url, $width: 14px, $height: 16px) {
+  display: inline-block;
+  width: $width;
+  height: $height;
+
+  background-image: url($url);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
 
 

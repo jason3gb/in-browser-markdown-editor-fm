@@ -1,24 +1,43 @@
-export function themeLoader(){
+export function themeLoader() {
   const themeSwitch = document.getElementById('theme-switch');
+  const darkThemeIcon = document.querySelector('.dark-theme-icon');
+  const lightThemeIcon = document.querySelector('.light-theme-icon');
 
-  themeSwitch.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
+  // Function to update the icon styles and perform other logic for theme change
+  function updateTheme(theme) {
+    if (theme === 'light-mode') {
+      // Apply light theme logic
+      document.body.classList.remove('dark-mode');
+      // Set light theme icon filter to white
+      lightThemeIcon.style.filter = 'brightness(0) invert(1)';
+      // Remove filter from dark theme icon
+      darkThemeIcon.style.filter = '';
 
-    // Update the theme setting in localStorage
-    if(document.body.classList.contains('dark-mode')) {
-      localStorage.setItem('theme', 'dark-mode');
-    } else {
       localStorage.setItem('theme', 'light-mode');
-    }
+    } else {
+      // Apply dark theme logic
+      document.body.classList.add('dark-mode');
+      // Set dark theme icon filter to white
+      darkThemeIcon.style.filter = 'brightness(0) invert(1)';
+      // Remove filter from light theme icon
+      lightThemeIcon.style.filter = '';
 
-    console.log("Theme: ", localStorage.getItem('theme'));
+      localStorage.setItem('theme', 'dark-mode');
+    }
+  }
+
+  // Event listener for change on the theme switch checkbox
+  themeSwitch.addEventListener('change', () => {
+    const theme = themeSwitch.checked ? 'light-mode' : 'dark-mode';
+    updateTheme(theme);
   });
 
-// On page load, apply the stored theme
+  // On page load, apply the stored theme
   window.addEventListener('DOMContentLoaded', () => {
     const storedTheme = localStorage.getItem('theme');
-    if(storedTheme === 'dark-mode') {
-      document.body.classList.add(storedTheme);
+    if (storedTheme === 'light-mode') {
+      themeSwitch.checked = true;
     }
+    updateTheme(storedTheme);
   });
 }

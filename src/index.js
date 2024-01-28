@@ -10,6 +10,9 @@ import {defaultMarkdownText} from "./defaultMarkdown";
 import {themeLoader} from './theme';
 themeLoader();
 
+import {toolbarLoader} from "./toolbar";
+toolbarLoader();
+
 // Cache DOM elements
 const editorArea = document.getElementById('markdown-editor');
 const previewArea = document.getElementById('markdown-preview');

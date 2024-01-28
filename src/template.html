@@ -10,60 +10,98 @@
 </head>
 
 <body>
-<header class="editor-header">
 
-  <nav class="editor-navbar">
-
-    <div class="menu-bar">
-      <span class="menu-bar-icon"></span>
-    </div>
-
-    <span class="editor-name">MARKDOWN</span>
-
-    <span class="separate-bar"></span>
-
-    <div class="current-doc">
-      <span class="doc-icon"></span>
-      <div class="doc-name">
-        <span class="doc-name-title">Document Name</span>
-        <span class="doc-name-text">welcome.md</span>
+<div class="editor-container">
+  <div class="editor-sidebar">
+    <header class="sidebar-header">MY DOCUMENTS</header>
+    <div class="sidebar-body">
+      <div class="sidebar-operations">
+        <button class="new-doc-button">
+          <span class="btn-text">+ New Document</span>
+        </button>
+      </div>
+      <div class="my-docs">
+        <div class="my-doc-item">
+          <span class="doc-icon"></span>
+          <div class="doc-name">
+            <span class="doc-name-title">Document Name</span>
+            <span class="doc-name-text">welcome.md</span>
+          </div>
+        </div>
+        <div class="my-doc-item">
+          <span class="doc-icon"></span>
+          <div class="doc-name">
+            <span class="doc-name-title">Document Name</span>
+            <span class="doc-name-text">welcome.md</span>
+          </div>
+        </div>
       </div>
     </div>
-
-    <span class="flex-spacer"></span>
-
-    <button id="theme-switch">Theme Switch</button>
-
-    <span class="delete-icon"></span>
-    <button class="save-btn">
-      <span class="save-btn-icon"></span>
-      <span class="save-btn-text">Save Changes</span>
-    </button>
-  </nav>
-</header>
-
-<main class="editor-main">
-  <section class="markdown-section">
-    <div class="in-app-heading">
-      <span class="heading-title">MARKDOWN</span>
+    <div class="sidebar-footer">
+      <div class="theme-switch-group">
+        <span class="dark-theme-icon"></span>
+        <label class="switch">
+          <input type="checkbox" id="theme-switch">
+          <span class="slider round"></span>
+        </label>
+        <span class="light-theme-icon"></span>
+      </div>
     </div>
+  </div>
 
-    <textarea id="markdown-editor" class="editor-area"
-              placeholder="Write markdown in the markdown editor window"></textarea>
-  </section>
+  <div class="editor-interface">
+    <header class="editor-header">
+      <nav class="editor-navbar">
+        <div class="menu-bar">
+          <span class="menu-bar-icon"></span>
+        </div>
 
-  <span class="editor-spacer"></span>
+        <span class="editor-name">MARKDOWN</span>
 
-  <section class="preview-section">
-    <div class="in-app-heading">
-      <span class="heading-title">PREVIEW</span>
-      <span class="preview-icon"></span>
-    </div>
-    <div class="preview-area">
-      <div id="markdown-preview" class="markdown-body custom-markdown-body"></div>
-    </div>
-  </section>
-</main>
+        <span class="separate-bar"></span>
+
+        <div class="current-doc">
+          <span class="doc-icon"></span>
+          <div class="doc-name">
+            <span class="doc-name-title">Document Name</span>
+            <span class="doc-name-text">welcome.md</span>
+          </div>
+        </div>
+
+        <span class="flex-spacer"></span>
+
+        <span class="delete-icon"></span>
+        <button class="save-btn">
+          <span class="btn-icon"></span>
+          <span class="btn-text">Save Changes</span>
+        </button>
+      </nav>
+    </header>
+    <main class="editor-main">
+      <section class="markdown-section">
+        <div class="in-app-heading">
+          <span class="heading-title">MARKDOWN</span>
+        </div>
+
+        <textarea id="markdown-editor" class="editor-area"
+                  placeholder="Write markdown in the markdown editor window"></textarea>
+      </section>
+
+      <span class="editor-spacer"></span>
+
+      <section class="preview-section">
+        <div class="in-app-heading">
+          <span class="heading-title">PREVIEW</span>
+          <span class="preview-icon"></span>
+        </div>
+        <div class="preview-area">
+          <div id="markdown-preview" class="markdown-body custom-markdown-body"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
 
 </body>
 

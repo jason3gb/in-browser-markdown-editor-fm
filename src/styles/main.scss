@@ -7,6 +7,7 @@
 
 // Import each section
 @import 'header';
+@import 'toolbar';
 
 // theme colors
 :root {
@@ -24,46 +25,69 @@ body.dark-mode {
   --editor-spacer-color: #{$color-600};
 }
 
+.editor-container {
+  display: flex;
+  height: 100vh;
+}
+
 
 .editor-main {
-  height: calc(100vh - $nav-bar-height);
   display: flex;
+  height: calc(100vh - $nav-bar-height);
+  overflow: hidden;
+
+  .in-app-heading {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    padding: 16px 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background-color: var(--editor-in-app-heading-color);
+
+    > .heading-title {
+      @include roboto-regular(14px, 2px, normal);
+      font-weight: 500;
+      color: var(--editor-in-app-heading-title-color);
+    }
+
+    > .preview-icon {
+      display: inline-block;
+      width: 16px;
+      height: 12px;
+
+      background-image: url("../assets/icon-show-preview.svg");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  }
 
   .markdown-section {
     flex: 1;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 
     .editor-area {
       // font
       @include roboto-mono-regular(14px, 24px);
 
-      height: 100%;
+      flex: 1;
       width: 100%;
 
       box-sizing: border-box;
       border: none;
       padding: 10px 16px;
+      resize: none;
 
       color: var(--editor-text-color);
       background-color: var(--editor-background-color);
-    }
-
-    .in-app-heading {
-      position: sticky;
-      top: $nav-bar-height;
-
-      padding: 16px 12px;
-
-      display: flex;
-      align-items: center;
-
-      background-color: var(--editor-in-app-heading-color);
-
-      > span {
-        @include roboto-regular(14px, 2px, normal);
-        font-weight: 500;
-        color: var(--editor-in-app-heading-title-color);
-      }
     }
   }
 
@@ -79,42 +103,12 @@ body.dark-mode {
     flex: 1;
     height: 100%;
 
-    .in-app-heading {
-      position: sticky;
-      top: $nav-bar-height;
-
-      padding: 16px 12px;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      background-color: var(--editor-in-app-heading-color);
-
-      > .heading-title {
-        @include roboto-regular(14px, 2px, normal);
-        font-weight: 500;
-        color: var(--editor-in-app-heading-title-color);
-      }
-
-      >.preview-icon {
-        display: inline-block;
-        width: 16px;
-        height: 12px;
-
-        background-image: url("../assets/icon-show-preview.svg");
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-      }
-    }
-
     .preview-area {
       box-sizing: border-box;
       height: 100%;
       overflow: auto;
       width: 100%;
-      padding: 24px 24px 50px 24px;
+      padding: 24px 24px 100px 24px;
 
       background-color: var(--color-canvas-default);
     }

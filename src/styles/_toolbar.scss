@@ -1,0 +1,117 @@
+.editor-sidebar {
+  flex-shrink: 0;
+
+  height: 100%;
+
+  box-sizing: border-box;
+  width: 250px;
+
+  background-color: $color-900;
+
+  display: flex;
+  flex-direction: column;
+
+  //animation
+  transition: max-width 0.2s ease-in-out; // Add this line
+  max-width: 0; // Add this line
+  overflow: hidden;
+
+  .sidebar-header {
+    margin: 0 24px;
+    @include roboto-regular(14px, 2px, normal);
+    color: $color-500;
+
+    display: flex;
+    align-items: center;
+
+    height: $nav-bar-height;
+  }
+
+  .sidebar-body {
+    margin: 5px 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .sidebar-operations {
+      .new-doc-button {
+        @include editor-button();
+        width: 100%;
+      }
+    }
+
+    .my-docs {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      .my-doc-item {
+        @include doc-item();
+      }
+    }
+  }
+
+  .sidebar-footer {
+    margin: auto 24px 24px 24px;
+    height: 50px;
+
+    display: flex;
+    flex-direction: column;
+
+    .theme-switch-group {
+      flex: 1;
+      display: flex;
+      align-items: center;
+
+      .dark-theme-icon {
+        @include icon("../assets/icon-dark-mode.svg", 17px, 16px);
+      }
+
+      .light-theme-icon {
+        @include icon("../assets/icon-light-mode.svg", 17px, 16px);
+      }
+
+      .switch {
+        flex-grow: 0;
+        margin: 0 10px;
+
+        position: relative;
+        display: inline-block;
+        width: 48px; /* Width of the switch */
+        height: 24px; /* Height of the switch */
+
+        /* The slider */
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: $color-600; /* Slider background when it's off */
+          transition: .4s;
+          border-radius: 34px; /* Full round edges */
+        }
+
+        /* The slider circle */
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 12px; /* The circle size */
+          width: 12px; /* The circle size */
+          left: 6px; /* Space from the left */
+          bottom: 6px; /* Space from the bottom */
+          background-color: $color-100;
+          transition: .4s;
+          border-radius: 50%; /* Make it round */
+        }
+
+        /* Move the circle to the right on checked state */
+        input:checked + .slider:before {
+          transform: translateX(24px); /* Move circle to the right */
+        }
+      }
+    }
+  }
+}
