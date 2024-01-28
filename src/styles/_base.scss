@@ -95,10 +95,13 @@ body.dark-mode {
 }
 
 // doc styling
-@mixin doc-item {
+@mixin doc-item($from-nav-bar: false) {
   display: flex;
   align-items: center;
   gap: 16px;
+
+  padding: 6px;
+  border-right: 4px;
 
   .doc-icon {
     display: inline-block;
@@ -140,6 +143,7 @@ body.dark-mode {
   justify-content: center;
   gap: 5px;
 
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
 
   @if $icon-url != null {
     .btn-icon {
@@ -156,6 +160,15 @@ body.dark-mode {
 
   .btn-text {
     color: $color-100;
+  }
+
+  &:hover {
+    background-color: $color-orange-hover;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }
 

@@ -7,7 +7,7 @@
 
 // Import each section
 @import 'header';
-@import 'toolbar';
+@import 'sidebar';
 
 // theme colors
 :root {
@@ -28,8 +28,16 @@ body.dark-mode {
 .editor-container {
   display: flex;
   height: 100vh;
-}
 
+  overflow: hidden;
+
+  .editor-interface {
+    flex-grow: 1;
+    flex-shrink: 0;
+
+    width: 100%;
+  }
+}
 
 .editor-main {
   display: flex;

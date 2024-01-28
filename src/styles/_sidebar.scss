@@ -17,6 +17,7 @@
   overflow: hidden;
 
   .sidebar-header {
+    flex-shrink: 0;
     margin: 0 24px;
     @include roboto-regular(14px, 2px, normal);
     color: $color-500;
@@ -28,13 +29,20 @@
   }
 
   .sidebar-body {
+    flex-grow: 1;
     margin: 5px 24px;
 
     display: flex;
     flex-direction: column;
     gap: 24px;
 
+    overflow: hidden;
+
     .sidebar-operations {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+
       .new-doc-button {
         @include editor-button();
         width: 100%;
@@ -42,17 +50,49 @@
     }
 
     .my-docs {
+      flex-grow: 1;
+      overflow-y: auto;
+
       display: flex;
       flex-direction: column;
       gap: 24px;
 
+      transition: background-color 0.2s; // Add this line
+
+      &::-webkit-scrollbar {
+        width: 2px; /* Adjust the width of the scrollbar */
+      }
+
+      /* Styles for the scrollbar handle */
+      &::-webkit-scrollbar-thumb {
+        background-color: $color-600; /* Color of the scrollbar thumb */
+        border-radius: 5px; /* Roundness of the scrollbar thumb */
+        border: 2px solid transparent; /* Optional: Adds a border */
+
+        &:hover {
+          background-color: $color-400; /* Color of the thumb on hover */
+        }
+      }
+
+
       .my-doc-item {
         @include doc-item();
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &:active {
+            background-color: $color-800;
+        }
+
       }
     }
   }
 
   .sidebar-footer {
+    flex-shrink: 0;
+
     margin: auto 24px 24px 24px;
     height: 50px;
 

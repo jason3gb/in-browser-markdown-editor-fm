@@ -23,6 +23,13 @@
       align-items: center;
       justify-content: center;
 
+      transition: background-color 0.2s;
+
+      &:hover {
+        cursor: pointer;
+        background-color: $color-orange;
+      }
+
       .menu-bar-icon {
         display: inline-block;
         width: 30px;
@@ -53,25 +60,60 @@
     }
 
     .current-doc {
-      @include doc-item();
+      @include doc-item(true);
 
       margin-left: 30px;
+
+      .doc-name-input {
+        background: transparent; /* Match the background */
+        border: none; /* No border */
+        color: $color-100; /* Text color like surrounding text */
+        font-family: inherit; /* Match the font to the surrounding text */
+        font-size: inherit; /* Match the font size to the surrounding text */
+        outline: none; /* Remove focus outline */
+        border-bottom: 1px solid transparent; /* Add an underline to indicate editability */
+
+        width: 300px;
+
+        &:hover,
+        &:focus {
+          border-bottom: 2px solid $color-100; /* Changes the underline color on hover/focus */
+        }
+
+        &:focus {
+          outline: none; /* Removes the default focus styles */
+        }
+      }
     }
 
     .flex-spacer {
       flex-grow: 1;
     }
 
-    .delete-icon {
-      display: inline-block;
-      width: 14px;
-      height: 16px;
+    .delete-button {
+      fill: white;
+      transition: fill 0.2s;
 
-      background-image: url("../assets/icon-delete.svg");
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
+      .delete-icon {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: $color-500; /* Initial icon color */
+        -webkit-mask: url("../assets/icon-delete.svg") no-repeat center / contain;
+        mask: url("../assets/icon-delete.svg") no-repeat center / contain;
+        transition: background-color 0.2s;
+      }
+
+      &:hover .delete-icon {
+        cursor: pointer;
+        background-color: $color-orange;
+      }
+
+      &:active .delete-icon {
+        transform: scale(0.9);
+      }
     }
+
 
     .save-btn {
       @include editor-button(url("../assets/icon-save.svg"));
