@@ -4,6 +4,10 @@ import {marked} from "marked";
 import {v4 as uuidv4} from "uuid";
 
 import {defaultMarkdownText} from "./defaultMarkdown";
+import hidePreviewIcon from './assets/icon-hide-preview.svg';
+import showPreviewIcon from './assets/icon-show-preview.svg';
+
+const NON_EXISTENT_DOC_ID = 'NON_EXISTENT_DOC_ID';
 
 class Doc {
   constructor(id, createdAt, name, content) {
@@ -66,7 +70,7 @@ class DocStore {
       let lastDocID = Array.from(this.docMap.keys()).pop();
       this.setCurrentDoc(lastDocID);
     } else {
-      this.setCurrentDoc('NON_EXISTENT_DOC_ID');
+      this.setCurrentDoc(NON_EXISTENT_DOC_ID);
     }
   }
 
@@ -81,31 +85,88 @@ class DocStore {
 
     this.currentDocID = data[0].id;
   }
+
+  renderMyDocList() {
+    const docsContainer = document.querySelector('.my-docs');
+    docsContainer.innerHTML = ''; // Clear existing content
+
+    this.docMap.forEach(doc => {
+      const docItem = new DocItem(doc);
+      docItem.appendTo(docsContainer);
+    });
+
+    this.highlightCurrentDoc();
+  }
+
+  changeCurrentDoc(newDocID) {
+    this.removeHighlightDoc(this.currentDocID);
+    this.setCurrentDoc(newDocID);
+    this.highlightCurrentDoc();
+  }
+
+  removeHighlightDoc(docID) {
+    if (this.isEmpty() || this.currentDocID === NON_EXISTENT_DOC_ID) {
+      return;
+    }
+
+    const docItem = document.getElementById(`doc-${this.currentDocID}`);
+    docItem.style.backgroundColor = 'transparent';
+  }
+
+  highlightCurrentDoc() {
+    if (this.isEmpty() || this.currentDocID === NON_EXISTENT_DOC_ID) {
+      return;
+    }
+
+    const docItem = document.getElementById(`doc-${this.currentDocID}`);
+    docItem.style.backgroundColor = '#35393F';
+  }
 }
 
 const docStore = new DocStore();
 
-function renderDocItem(doc, index) {
-  return `
-    <div class="my-doc-item">
+class DocItem {
+  constructor(doc) {
+    this.doc = doc;
+    this.element = this.createElement();
+  }
+
+  createElement() {
+    const div = document.createElement('div');
+    div.id = `doc-${this.doc.id}`;
+    div.className = 'my-doc-item';
+    div.innerHTML = `
       <span class="doc-icon"></span>
       <div class="doc-name">
         <span class="doc-name-title">Document Name</span>
-        <span class="doc-name-text">${doc.name}</span>
+        <span class="doc-name-text">${this.doc.name}</span>
       </div>
-    </div>
-  `;
+    `;
+
+    // Add an event listener to the element
+    div.addEventListener('click', () => {
+      this.handleClick()
+    });
+
+    return div;
+  }
+
+  handleClick() {
+    console.log('Document clicked:', this.doc.id);
+
+    // Additional click handling logic here
+    docStore.changeCurrentDoc(this.doc.id);
+
+    updateEditor();
+  }
+
+  // Method to append the element to a parent
+  appendTo(parent) {
+    parent.appendChild(this.element);
+  }
 }
 
 // Function to render all documents
-function renderMyDocList(docStore) {
-  const docsContainer = document.querySelector('.my-docs');
-  docsContainer.innerHTML = ''; // Clear existing content
-  docStore.docMap.forEach(((doc, i) => {
-    docsContainer.innerHTML += renderDocItem(doc, i);
-  }));
-}
-
 function loadDocMapFromLocalStorage() {
   const localData = JSON.parse(localStorage.getItem('markdown-data'));
 
@@ -114,12 +175,7 @@ function loadDocMapFromLocalStorage() {
   } catch (e) {
     console.error('load doc error:', e);
 
-    let defaultDoc = {
-      id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      name: 'untitled-document.md',
-      content: defaultMarkdownText,
-    };
+    let defaultDoc = new Doc(uuidv4(), new Date().toISOString(), 'untitled-document.md', defaultMarkdownText);
 
     docStore.addDoc(defaultDoc);
     docStore.setCurrentDoc(defaultDoc.id);
@@ -186,7 +242,7 @@ export function editorLoader() {
     docStore.persistDocMap();
 
     // render my-doc list
-    renderMyDocList(docStore);
+    docStore.renderMyDocList();
 
     // render editor
     updateEditor();
@@ -207,13 +263,13 @@ export function editorLoader() {
     docStore.persistDocMap();
 
     // render my-doc list
-    renderMyDocList(docStore);
+    docStore.renderMyDocList();
 
     // render editor
     updateEditor();
   };
 
-  const deleteDocBtn = document.querySelector('.editor-navbar .delete-icon');
+  const deleteDocBtn = document.getElementById('delete-icon');
   deleteDocBtn.addEventListener('click', onDelete);
 
   // Save
@@ -277,15 +333,40 @@ export function editorLoader() {
     onDocNameChange(event.target.value);
   });
 
+  // preview
+  let onPreviewClick = (hidePreview) => {
+    const markdownSection = document.querySelector('.markdown-section');
+    const previewIcon = document.querySelector('#preview-icon>.icon');
+
+    if (hidePreview) {
+      previewIcon.style.webkitMask = `url(${hidePreviewIcon}) no-repeat center / contain`;
+      previewIcon.style.mask = `url(${hidePreviewIcon}) no-repeat center / contain`;
+
+      markdownSection.style.display = 'none';
+    } else {
+      previewIcon.style.webkitMask = `url(${showPreviewIcon}) no-repeat center / contain`;
+      previewIcon.style.mask = `url(${showPreviewIcon}) no-repeat center / contain`;
+
+      markdownSection.style.display = 'flex';
+    }
+  }
+
+  let hidePreview = false;
+  const previewIconBtn = document.getElementById('preview-icon');
+  previewIconBtn.addEventListener('click', () => {
+    hidePreview = !hidePreview;
+    onPreviewClick(hidePreview);
+  });
+
   // initial setup
   document.addEventListener('DOMContentLoaded', () => {
     // load data
     loadDocMapFromLocalStorage();
 
     // render my-doc list
-    renderMyDocList(docStore);
+    docStore.renderMyDocList();
 
-    // render editor
+
     updateEditor();
   });
 }

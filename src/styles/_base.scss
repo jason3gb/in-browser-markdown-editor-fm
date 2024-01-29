@@ -184,6 +184,30 @@ body.dark-mode {
   background-repeat: no-repeat;
 }
 
+@mixin icon-button($url, $width: 18px, $height: 20px) {
+  fill: white;
+  transition: fill 0.2s;
+
+  .icon {
+    display: inline-block;
+    width: $width;
+    height: $height;
+    background-color: $color-500; /* Initial icon color */
+    -webkit-mask: url($url) no-repeat center / contain;
+    mask: url($url) no-repeat center / contain;
+    transition: background-color 0.2s;
+  }
+
+  &:hover .icon {
+    cursor: pointer;
+    background-color: $color-orange;
+  }
+
+  &:active .icon {
+    transform: scale(0.9);
+  }
+}
+
 
 
 

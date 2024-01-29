@@ -90,30 +90,9 @@
       flex-grow: 1;
     }
 
-    .delete-button {
-      fill: white;
-      transition: fill 0.2s;
-
-      .delete-icon {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        background-color: $color-500; /* Initial icon color */
-        -webkit-mask: url("../assets/icon-delete.svg") no-repeat center / contain;
-        mask: url("../assets/icon-delete.svg") no-repeat center / contain;
-        transition: background-color 0.2s;
-      }
-
-      &:hover .delete-icon {
-        cursor: pointer;
-        background-color: $color-orange;
-      }
-
-      &:active .delete-icon {
-        transform: scale(0.9);
-      }
+    .delete-icon {
+      @include icon-button("../assets/icon-delete.svg");
     }
-
 
     .save-btn {
       @include editor-button(url("../assets/icon-save.svg"));

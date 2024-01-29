@@ -64,14 +64,7 @@ body.dark-mode {
     }
 
     > .preview-icon {
-      display: inline-block;
-      width: 16px;
-      height: 12px;
-
-      background-image: url("../assets/icon-show-preview.svg");
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
+      @include icon-button("../assets/icon-show-preview.svg", 16px, 12px);
     }
   }
 
