@@ -145,7 +145,7 @@ class DocItem {
 
     // Add an event listener to the element
     div.addEventListener('click', () => {
-      this.handleClick()
+      this.handleClick();
     });
 
     return div;
@@ -256,24 +256,38 @@ export function editorLoader() {
   addDocBtn.addEventListener('click', onAdd);
 
   // Delete
-  let onDelete = () => {
-    docStore.removeDoc(docStore.currentDocID);
+  let onDeleteConfirm = () => {
+    try {
+      docStore.removeDoc(docStore.currentDocID);
+      docStore.persistDocMap();
+      docStore.renderMyDocList();
 
-    // save to local storage
-    docStore.persistDocMap();
-
-    // render my-doc list
-    docStore.renderMyDocList();
-
-    // render editor
-    updateEditor();
+      // render editor
+      updateEditor();
+    } catch (e) {
+      console.error('delete doc error:', e);
+    } finally {
+      const deleteModal = document.getElementById('delete-confirmation-modal');
+      deleteModal.style.display = 'none';
+    }
   };
+  const deleteConfirmBtn = document.getElementById('confirm-delete');
+  deleteConfirmBtn.addEventListener('click', onDeleteConfirm);
+
+  let onDelete = () => {
+    const deleteModal = document.getElementById('delete-confirmation-modal');
+    deleteModal.style.display = 'flex';
+  }
 
   const deleteDocBtn = document.getElementById('delete-icon');
   deleteDocBtn.addEventListener('click', onDelete);
 
   // Save
   let onSave = () => {
+    if (docStore.isEmpty()) {
+      return;
+    }
+
     docStore.updateCurrentDocContent(editorArea.value);
 
     // save to local storage
@@ -295,6 +309,9 @@ export function editorLoader() {
 
     docStore.updateCurrentDocName(newDocName);
     docStore.persistDocMap();
+
+    const docItem = document.getElementById(`doc-${docStore.currentDocID}`);
+    docItem.querySelector('.doc-name-text').textContent = newDocName;
 
     console.log('Doc name updated:', newDocName);
   };
@@ -319,9 +336,21 @@ export function editorLoader() {
       }
     }
 
+    disableHover();
+
     event.target.dataset.fromKeyDownEvent = 'true';
     event.target.blur();
   });
+
+  let disableHover = () => {
+    currentDocNameInput.classList.add('disable-hover');
+  }
+
+// Function to remove the class that disables hover effects
+  let enableHover = () => {
+    currentDocNameInput.classList.remove('disable-hover');
+  }
+
 
   currentDocNameInput.addEventListener('blur', (event) => {
     if (event.target.dataset.fromKeyDownEvent === 'true') {
@@ -332,6 +361,9 @@ export function editorLoader() {
 
     onDocNameChange(event.target.value);
   });
+
+  // Re-enable hover effects when the mouse enters the input container
+  currentDocNameInput.closest('.current-doc').addEventListener('mouseenter', enableHover);
 
   // preview
   let onPreviewClick = (hidePreview) => {
