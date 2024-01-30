@@ -8,6 +8,10 @@
 
   background-color: $color-800;
 
+  @include mobile {
+    height: $nav-bar-height-mobile;
+  }
+
   .editor-navbar {
     height: 100%;
     display: flex;
@@ -15,8 +19,9 @@
     justify-content: space-between;
 
     .menu-bar {
+      flex-shrink: 0;
       background-color: $color-700;
-      width: 72px;
+      width: $nav-bar-height;
       height: 100%;
 
       display: flex;
@@ -24,6 +29,10 @@
       justify-content: center;
 
       transition: background-color 0.2s;
+
+      @include mobile {
+        width: $nav-bar-height-mobile;
+      }
 
       &:hover {
         cursor: pointer;
@@ -39,6 +48,11 @@
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
+
+        @include mobile {
+          width: 23px;
+          height: 14px;
+        }
       }
     }
 
@@ -49,6 +63,10 @@
       font-size: $font-size-h6;
       letter-spacing: 6px;
       font-weight: bold;
+
+      @include mobile {
+        display: none;
+      }
     }
 
     .separate-bar {
@@ -57,12 +75,23 @@
       height: 40px;
 
       background-color: $color-600;
+
+      @include mobile {
+        display: none;
+      }
     }
 
     .current-doc {
       @include doc-item(true);
 
+      flex-shrink: 0;
       margin-left: 30px;
+
+      @include mobile {
+        .doc-name-title {
+          display: none;
+        }
+      }
 
       .doc-name-input {
         background: transparent; /* Match the background */
@@ -74,6 +103,10 @@
         border-bottom: 1px solid transparent; /* Add an underline to indicate editability */
 
         width: 300px;
+
+        @include mobile {
+          width: 100px;
+        }
 
         &:hover,
         &:focus {
@@ -96,7 +129,19 @@
 
     .save-btn {
       @include editor-button(url("../assets/icon-save.svg"));
+      width: 200px;
       margin: 0 16px;
+
+      @include mobile {
+        width: 40px;
+        margin: 0 8px 0 16px;
+
+        padding: 12px;
+
+        .btn-text {
+          display: none;
+        }
+      }
     }
   }
 }

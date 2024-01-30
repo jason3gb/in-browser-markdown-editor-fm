@@ -94,6 +94,13 @@ body.dark-mode {
   }
 }
 
+// media query mixin
+@mixin mobile {
+  @media only screen and (max-width: 600px) {
+    @content;
+  }
+}
+
 // doc styling
 @mixin doc-item($from-nav-bar: false) {
   display: flex;
@@ -148,7 +155,7 @@ body.dark-mode {
   @if $icon-url != null {
     .btn-icon {
       display: inline-block;
-      width: 14px;
+      width: 16px;
       height: 16px;
 
       background-image: $icon-url;

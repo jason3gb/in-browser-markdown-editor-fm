@@ -3,6 +3,8 @@ import _ from "lodash";
 import {marked} from "marked";
 import {v4 as uuidv4} from "uuid";
 
+import {formatDateStr} from "./util";
+
 import {defaultMarkdownText} from "./defaultMarkdown";
 import hidePreviewIcon from './assets/icon-hide-preview.svg';
 import showPreviewIcon from './assets/icon-show-preview.svg';
@@ -132,13 +134,14 @@ class DocItem {
   }
 
   createElement() {
+    let createdAt = formatDateStr(this.doc.createdAt);
     const div = document.createElement('div');
     div.id = `doc-${this.doc.id}`;
     div.className = 'my-doc-item';
     div.innerHTML = `
       <span class="doc-icon"></span>
       <div class="doc-name">
-        <span class="doc-name-title">Document Name</span>
+        <span class="doc-name-title">${createdAt}</span>
         <span class="doc-name-text">${this.doc.name}</span>
       </div>
     `;
@@ -168,20 +171,25 @@ class DocItem {
 
 // Function to render all documents
 function loadDocMapFromLocalStorage() {
+  let addDefaultData = () => {
+    let defaultDoc = new Doc(uuidv4(), new Date().toISOString(), 'untitled-document.md', defaultMarkdownText);
+    docStore.addDoc(defaultDoc);
+    docStore.setCurrentDoc(defaultDoc.id);
+    // save to local storage
+    docStore.persistDocMap();
+  }
+
   const localData = JSON.parse(localStorage.getItem('markdown-data'));
+  if (!localData || localData.length === 0) {
+    addDefaultData();
+    return;
+  }
 
   try {
     docStore.loadDocMap(localData);
   } catch (e) {
     console.error('load doc error:', e);
-
-    let defaultDoc = new Doc(uuidv4(), new Date().toISOString(), 'untitled-document.md', defaultMarkdownText);
-
-    docStore.addDoc(defaultDoc);
-    docStore.setCurrentDoc(defaultDoc.id);
-
-    // save to local storage
-    docStore.persistDocMap();
+    addDefaultData();
   }
 }
 
@@ -246,10 +254,6 @@ export function editorLoader() {
 
     // render editor
     updateEditor();
-
-    // focus on the new doc
-    const docNameInput = document.getElementById('current-doc-name');
-    docNameInput.focus();
   }
 
   const addDocBtn = document.querySelector('.sidebar-operations .new-doc-button');
@@ -366,28 +370,44 @@ export function editorLoader() {
   currentDocNameInput.closest('.current-doc').addEventListener('mouseenter', enableHover);
 
   // preview
-  let onPreviewClick = (hidePreview) => {
+  let onPreviewClick = (event, showPreview) => {
     const markdownSection = document.querySelector('.markdown-section');
-    const previewIcon = document.querySelector('#preview-icon>.icon');
+    const previewSection = document.querySelector('.preview-section');
+    const previewIcons = document.querySelectorAll('.preview-icon .icon');
 
-    if (hidePreview) {
-      previewIcon.style.webkitMask = `url(${hidePreviewIcon}) no-repeat center / contain`;
-      previewIcon.style.mask = `url(${hidePreviewIcon}) no-repeat center / contain`;
+    const mediaQuery = window.matchMedia('(max-width: 600px)');
+
+    if (showPreview) {
+      previewIcons.forEach(icon => {
+        icon.style.webkitMask = `url(${hidePreviewIcon}) no-repeat center / contain`;
+        icon.style.mask = `url(${hidePreviewIcon}) no-repeat center / contain`;
+      })
 
       markdownSection.style.display = 'none';
+      if (mediaQuery.matches) {
+        previewSection.style.display = 'block';
+      }
+
     } else {
-      previewIcon.style.webkitMask = `url(${showPreviewIcon}) no-repeat center / contain`;
-      previewIcon.style.mask = `url(${showPreviewIcon}) no-repeat center / contain`;
+      previewIcons.forEach(icon => {
+        icon.style.webkitMask = `url(${showPreviewIcon}) no-repeat center / contain`;
+        icon.style.mask = `url(${showPreviewIcon}) no-repeat center / contain`;
+      })
 
       markdownSection.style.display = 'flex';
+      if (mediaQuery.matches) {
+        previewSection.style.display = 'none';
+      }
     }
   }
 
-  let hidePreview = false;
-  const previewIconBtn = document.getElementById('preview-icon');
-  previewIconBtn.addEventListener('click', () => {
-    hidePreview = !hidePreview;
-    onPreviewClick(hidePreview);
+  let showPreview = false; // Define hidePreview here so that it's unique to each btn
+  const previewIconBtns = document.querySelectorAll('.preview-icon');
+  previewIconBtns.forEach(btn => {
+    btn.addEventListener('click', (event) => {
+      showPreview = !showPreview;
+      onPreviewClick(event, showPreview);
+    });
   });
 
   // initial setup

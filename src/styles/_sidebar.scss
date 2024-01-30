@@ -26,6 +26,10 @@
     align-items: center;
 
     height: $nav-bar-height;
+
+    @include mobile {
+      height: $nav-bar-height-mobile;
+    }
   }
 
   .sidebar-body {
@@ -44,6 +48,7 @@
       flex-direction: column;
 
       .new-doc-button {
+        flex-shrink: 0;
         @include editor-button();
         width: 100%;
       }

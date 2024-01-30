@@ -45,6 +45,10 @@ body.dark-mode {
   height: calc(100vh - $nav-bar-height);
   overflow: hidden;
 
+  @include mobile {
+    height: calc(100vh - $nav-bar-height-mobile);
+  }
+
   .in-app-heading {
     position: sticky;
     top: 0;
@@ -91,6 +95,16 @@ body.dark-mode {
       color: var(--editor-text-color);
       background-color: var(--editor-background-color);
     }
+
+    .in-app-heading {
+      >.preview-icon {
+        display: none;
+
+        @include mobile {
+          display: inline-block;
+        }
+      }
+    }
   }
 
   .editor-spacer {
@@ -99,11 +113,20 @@ body.dark-mode {
     width: 1px;
     height: 100%;
     background-color: var(--editor-spacer-color);
+
+    @include mobile {
+      display: none;
+    }
   }
 
   .preview-section {
     flex: 1;
     height: 100%;
+    width: 100%;
+
+    @include mobile {
+      display: none;
+    }
 
     .preview-area {
       box-sizing: border-box;
@@ -115,6 +138,5 @@ body.dark-mode {
       background-color: var(--color-canvas-default);
     }
   }
-
 }
 
