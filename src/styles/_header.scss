@@ -1,3 +1,8 @@
+:root {
+  --input-border-bottom: 1px solid #FFFFFF;
+  --input-hover-border-bottom: 2px solid #FFFFFF;
+}
+
 .editor-header {
   height: $nav-bar-height;
   width: 100%;
@@ -100,7 +105,7 @@
         font-family: inherit; /* Match the font to the surrounding text */
         font-size: inherit; /* Match the font size to the surrounding text */
         outline: none; /* Remove focus outline */
-        border-bottom: 1px solid transparent; /* Add an underline to indicate editability */
+        border-bottom: var(--input-border-bottom); /* Add an underline to indicate editability */
 
         width: 300px;
 
@@ -110,7 +115,7 @@
 
         &:hover,
         &:focus {
-          border-bottom: 2px solid $color-100; /* Changes the underline color on hover/focus */
+          border-bottom: var(--input-hover-border-bottom); /* Changes the underline color on hover/focus */
         }
 
         &:focus {

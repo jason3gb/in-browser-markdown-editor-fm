@@ -4,6 +4,9 @@ const monthNames = [
   "July", "August", "September", "October", "November", "December"
 ];
 
+
+export const NON_EXISTENT_DOC_ID = 'NON_EXISTENT_DOC_ID';
+
 export function formatDateStr(isoString) {
 
   const date = new Date(isoString);

@@ -1,424 +1,70 @@
-import _ from "lodash";
-
-import {marked} from "marked";
-import {v4 as uuidv4} from "uuid";
-
-import {formatDateStr} from "./util";
-
-import {defaultMarkdownText} from "./defaultMarkdown";
-import hidePreviewIcon from './assets/icon-hide-preview.svg';
-import showPreviewIcon from './assets/icon-show-preview.svg';
-
-const NON_EXISTENT_DOC_ID = 'NON_EXISTENT_DOC_ID';
-
-class Doc {
-  constructor(id, createdAt, name, content) {
-    this.id = id;
-    this.createdAt = createdAt;
-    this.name = name;
-    this.content = content;
-  }
-}
-
-class DocStore {
-  constructor() {
-    this.currentDocID = '';
-    this.docMap = new Map();
-  }
-
-  getCurrentDoc() {
-    return this.docMap.get(this.currentDocID);
-  }
-
-  addDoc(doc) {
-    // Assuming each doc has an 'id' property
-    this.docMap.set(doc.id, doc);
-    this.setCurrentDoc(doc.id);
-  }
-
-  setCurrentDoc(docID) {
-    this.currentDocID = docID;
-  }
-
-  updateCurrentDocName(newName) {
-    let doc = this.docMap.get(this.currentDocID);
-    if (doc) {
-      // Assuming 'content' is a property of Doc objects
-      doc.name = newName;
-      this.docMap.set(this.currentDocID, doc); // Update the Map entry
-    }
-  }
-
-  updateCurrentDocContent(newContent) {
-    let doc = this.docMap.get(this.currentDocID);
-    if (doc) {
-      // Assuming 'content' is a property of Doc objects
-      doc.content = newContent;
-      this.docMap.set(this.currentDocID, doc); // Update the Map entry
-    }
-  }
-
-  persistDocMap() {
-    // save to local storage
-    localStorage.setItem('markdown-data', JSON.stringify(Array.from(this.docMap.values())));
-  }
-
-  // If you need to remove a document
-  removeDoc(docID) {
-    this.docMap.delete(docID);
-
-    // get the last doc_id in the map
-    if (this.docMap.size > 0) {
-      let lastDocID = Array.from(this.docMap.keys()).pop();
-      this.setCurrentDoc(lastDocID);
-    } else {
-      this.setCurrentDoc(NON_EXISTENT_DOC_ID);
-    }
-  }
-
-  isEmpty() {
-    return this.docMap.size === 0;
-  }
-
-  loadDocMap(data) {
-    if (data) {
-      this.docMap = new Map(data.map(doc => [doc.id, doc]));
-    }
-
-    this.currentDocID = data[0].id;
-  }
-
-  renderMyDocList() {
-    const docsContainer = document.querySelector('.my-docs');
-    docsContainer.innerHTML = ''; // Clear existing content
-
-    this.docMap.forEach(doc => {
-      const docItem = new DocItem(doc);
-      docItem.appendTo(docsContainer);
-    });
-
-    this.highlightCurrentDoc();
-  }
-
-  changeCurrentDoc(newDocID) {
-    this.removeHighlightDoc(this.currentDocID);
-    this.setCurrentDoc(newDocID);
-    this.highlightCurrentDoc();
-  }
-
-  removeHighlightDoc(docID) {
-    if (this.isEmpty() || this.currentDocID === NON_EXISTENT_DOC_ID) {
-      return;
-    }
-
-    const docItem = document.getElementById(`doc-${this.currentDocID}`);
-    docItem.style.backgroundColor = 'transparent';
-  }
-
-  highlightCurrentDoc() {
-    if (this.isEmpty() || this.currentDocID === NON_EXISTENT_DOC_ID) {
-      return;
-    }
-
-    const docItem = document.getElementById(`doc-${this.currentDocID}`);
-    docItem.style.backgroundColor = '#35393F';
-  }
-}
+import {DocStore} from "./model";
+import {DocStoreViewModel} from "./viewModel";
 
 const docStore = new DocStore();
+const docStoreViewModel = new DocStoreViewModel(docStore);
 
-class DocItem {
-  constructor(doc) {
-    this.doc = doc;
-    this.element = this.createElement();
-  }
-
-  createElement() {
-    let createdAt = formatDateStr(this.doc.createdAt);
-    const div = document.createElement('div');
-    div.id = `doc-${this.doc.id}`;
-    div.className = 'my-doc-item';
-    div.innerHTML = `
-      <span class="doc-icon"></span>
-      <div class="doc-name">
-        <span class="doc-name-title">${createdAt}</span>
-        <span class="doc-name-text">${this.doc.name}</span>
-      </div>
-    `;
-
-    // Add an event listener to the element
-    div.addEventListener('click', () => {
-      this.handleClick();
-    });
-
-    return div;
-  }
-
-  handleClick() {
-    console.log('Document clicked:', this.doc.id);
-
-    // Additional click handling logic here
-    docStore.changeCurrentDoc(this.doc.id);
-
-    updateEditor();
-  }
-
-  // Method to append the element to a parent
-  appendTo(parent) {
-    parent.appendChild(this.element);
-  }
-}
-
-// Function to render all documents
-function loadDocMapFromLocalStorage() {
-  let addDefaultData = () => {
-    let defaultDoc = new Doc(uuidv4(), new Date().toISOString(), 'untitled-document.md', defaultMarkdownText);
-    docStore.addDoc(defaultDoc);
-    docStore.setCurrentDoc(defaultDoc.id);
-    // save to local storage
-    docStore.persistDocMap();
-  }
-
-  const localData = JSON.parse(localStorage.getItem('markdown-data'));
-  if (!localData || localData.length === 0) {
-    addDefaultData();
-    return;
-  }
-
-  try {
-    docStore.loadDocMap(localData);
-  } catch (e) {
-    console.error('load doc error:', e);
-    addDefaultData();
-  }
-}
-
-function updateEditor() {
-  // update editor
-  const docNameInput = document.getElementById('current-doc-name');
-  const editorArea = document.getElementById('markdown-editor');
-  if (!docStore.isEmpty()) {
-    let currentDoc = docStore.getCurrentDoc();
-    editorArea.value = currentDoc.content;
-    docNameInput.value = currentDoc.name;
-  } else {
-    editorArea.value = '';
-    docNameInput.value = '';
-  }
-
-  // update preview
-  updatePreview().catch(error => console.error('Error updating preview:', error));
-}
-
-async function updatePreview() {
-  const editorArea = document.getElementById('markdown-editor');
-  const previewArea = document.getElementById('markdown-preview');
-
-  const markdownText = editorArea.value;
-
-  try {
-    const html = await marked.parse(markdownText);
-    previewArea.innerHTML = html;
-  } catch (error) {
-    console.error('Error parsing markdown');
-    previewArea.innerHTML = '<p>Error parsing markdown</p>';
-  }
-}
 
 export function editorLoader() {
 
-  // define all the selectors
-  const editorArea = document.getElementById('markdown-editor');
-
   // add all listeners
+  const editorArea = document.getElementById('markdown-editor');
   editorArea.addEventListener('input', () => {
-    updatePreview().catch(error => console.error('Error updating preview:', error));
+    docStoreViewModel.updatePreview().catch(error => console.error('Error updating preview:', error));
   });
 
   // Add
-  let onAdd = () => {
-    let newDoc = {
-      id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      name: 'untitled-document.md',
-      content: '',
-    };
-
-    docStore.addDoc(newDoc);
-
-    // save to local storage
-    docStore.persistDocMap();
-
-    // render my-doc list
-    docStore.renderMyDocList();
-
-    // render editor
-    updateEditor();
-  }
-
   const addDocBtn = document.querySelector('.sidebar-operations .new-doc-button');
-  addDocBtn.addEventListener('click', onAdd);
+  addDocBtn.addEventListener('click', () => {
+    docStoreViewModel.addNewDocument();
+  });
 
   // Delete
-  let onDeleteConfirm = () => {
-    try {
-      docStore.removeDoc(docStore.currentDocID);
-      docStore.persistDocMap();
-      docStore.renderMyDocList();
-
-      // render editor
-      updateEditor();
-    } catch (e) {
-      console.error('delete doc error:', e);
-    } finally {
-      const deleteModal = document.getElementById('delete-confirmation-modal');
-      deleteModal.style.display = 'none';
-    }
-  };
   const deleteConfirmBtn = document.getElementById('confirm-delete');
-  deleteConfirmBtn.addEventListener('click', onDeleteConfirm);
-
-  let onDelete = () => {
-    const deleteModal = document.getElementById('delete-confirmation-modal');
-    deleteModal.style.display = 'flex';
-  }
+  deleteConfirmBtn.addEventListener('click', () => {
+    docStoreViewModel.deleteCurrentDoc();
+  });
 
   const deleteDocBtn = document.getElementById('delete-icon');
-  deleteDocBtn.addEventListener('click', onDelete);
+  deleteDocBtn.addEventListener('click', () => {
+    docStoreViewModel.showDeleteConfirmationModal();
+  });
+
+  const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
+  deleteConfirmationModal.addEventListener('click', (event) => {
+    // Check if the click is outside the modal content
+    if (event.target === deleteConfirmationModal) {
+      docStoreViewModel.hideDeleteConfirmationModal();
+    }
+  });
 
   // Save
-  let onSave = () => {
-    if (docStore.isEmpty()) {
-      return;
-    }
-
-    docStore.updateCurrentDocContent(editorArea.value);
-
-    // save to local storage
-    docStore.persistDocMap();
-  };
   const saveDocBtn = document.querySelector('.editor-navbar .save-btn');
-  saveDocBtn.addEventListener('click', onSave);
+  saveDocBtn.addEventListener('click', () => {
+    docStoreViewModel.saveCurrentDoc();
+  });
 
   // Change Doc Name
-  let onDocNameChange = (newDocName) => {
-    if (docStore.isEmpty()) {
-      return;
-    }
-
-    let currentDoc = docStore.getCurrentDoc();
-    if (newDocName === currentDoc.name) {
-      return;
-    }
-
-    docStore.updateCurrentDocName(newDocName);
-    docStore.persistDocMap();
-
-    const docItem = document.getElementById(`doc-${docStore.currentDocID}`);
-    docItem.querySelector('.doc-name-text').textContent = newDocName;
-
-    console.log('Doc name updated:', newDocName);
-  };
-
   const currentDocNameInput = document.getElementById('current-doc-name');
   currentDocNameInput.addEventListener('keydown', (event) => {
-    // Check if either 'Enter' or 'Escape' key was pressed
-    if (event.key !== 'Enter' && event.key !== 'Escape') {
-      return;
-    }
-
-    event.preventDefault();
-
-    if (event.key === 'Enter') {
-      onDocNameChange(event.target.value);
-    } else if (event.key === 'Escape') {
-      // reset the value
-      if (docStore.getCurrentDoc()) {
-        event.target.value = docStore.getCurrentDoc().name;
-      } else {
-        event.target.value = '';
-      }
-    }
-
-    disableHover();
-
-    event.target.dataset.fromKeyDownEvent = 'true';
-    event.target.blur();
+    docStoreViewModel.onCurrentDocNameInputKeyDown(event);
   });
-
-  let disableHover = () => {
-    currentDocNameInput.classList.add('disable-hover');
-  }
 
 // Function to remove the class that disables hover effects
-  let enableHover = () => {
-    currentDocNameInput.classList.remove('disable-hover');
-  }
-
-
   currentDocNameInput.addEventListener('blur', (event) => {
-    if (event.target.dataset.fromKeyDownEvent === 'true') {
-      // Clear the data attribute and exit the function early
-      delete event.target.dataset.fromKeyDownEvent;
-      return;
-    }
-
-    onDocNameChange(event.target.value);
+    docStoreViewModel.onCurrentDocNameInputBlur(event);
   });
 
-  // Re-enable hover effects when the mouse enters the input container
-  currentDocNameInput.closest('.current-doc').addEventListener('mouseenter', enableHover);
-
   // preview
-  let onPreviewClick = (event, showPreview) => {
-    const markdownSection = document.querySelector('.markdown-section');
-    const previewSection = document.querySelector('.preview-section');
-    const previewIcons = document.querySelectorAll('.preview-icon .icon');
-
-    const mediaQuery = window.matchMedia('(max-width: 600px)');
-
-    if (showPreview) {
-      previewIcons.forEach(icon => {
-        icon.style.webkitMask = `url(${hidePreviewIcon}) no-repeat center / contain`;
-        icon.style.mask = `url(${hidePreviewIcon}) no-repeat center / contain`;
-      })
-
-      markdownSection.style.display = 'none';
-      if (mediaQuery.matches) {
-        previewSection.style.display = 'block';
-      }
-
-    } else {
-      previewIcons.forEach(icon => {
-        icon.style.webkitMask = `url(${showPreviewIcon}) no-repeat center / contain`;
-        icon.style.mask = `url(${showPreviewIcon}) no-repeat center / contain`;
-      })
-
-      markdownSection.style.display = 'flex';
-      if (mediaQuery.matches) {
-        previewSection.style.display = 'none';
-      }
-    }
-  }
-
-  let showPreview = false; // Define hidePreview here so that it's unique to each btn
   const previewIconBtns = document.querySelectorAll('.preview-icon');
   previewIconBtns.forEach(btn => {
     btn.addEventListener('click', (event) => {
-      showPreview = !showPreview;
-      onPreviewClick(event, showPreview);
+      docStoreViewModel.togglePreview();
     });
   });
 
   // initial setup
   document.addEventListener('DOMContentLoaded', () => {
-    // load data
-    loadDocMapFromLocalStorage();
-
-    // render my-doc list
-    docStore.renderMyDocList();
-
-
-    updateEditor();
+    docStoreViewModel.initializeFromLocalStorage();
   });
 }
